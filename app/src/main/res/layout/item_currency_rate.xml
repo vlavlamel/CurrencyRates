@@ -10,14 +10,13 @@
         android:layout_width="46dp"
         android:layout_height="46dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/currency_code"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/ic_australia" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/currency_code"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:ellipsize="end"
@@ -26,36 +25,57 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/currency_full_name"
-        app:layout_constraintEnd_toStartOf="@+id/appCompatEditText"
+        app:layout_constraintEnd_toStartOf="@+id/rate_wrapper"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/country_icon"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="AUD" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/currency_full_name"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:ellipsize="end"
         android:lines="1"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/appCompatEditText"
+        app:layout_constraintEnd_toStartOf="@+id/rate_wrapper"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/country_icon"
         tools:text="@string/aud_currency" />
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/appCompatEditText"
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/currency_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:lines="1"
-        android:inputType="numberDecimal"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="currency_full_name,currency_code" />
+
+    <FrameLayout
+        android:id="@+id/rate_wrapper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="1183.06" />
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toEndOf="@id/currency_name"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:inputType="numberDecimal"
+            android:lines="1"
+            android:maxLength="16"
+            android:textColor="@android:color/black"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            tools:text="1183.06" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

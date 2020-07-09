@@ -2,22 +2,17 @@ package com.vlavlamel.currency_rates.base_adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 /*
 * Main idea and expiration from - https://github.com/sockeqwe/AdapterDelegates
-* The main advantage of this solution is that you can easily add viewholders different viewtypes
+* The main advantage of this solution is that you can easily add viewholders with different viewtypes
 * */
 
-abstract class  BaseDelegationAdapter<T>(protected val delegatesManager: AdapterDelegatesManager<T>) :
+abstract class BaseDelegationAdapter<T>(protected val delegatesManager: AdapterDelegatesManager<T>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    //open val adapterEvents: MutableLiveData<AdapterEvent<T>> = MutableLiveData()
-
-    var items: T? = null
-        set(value) {
-            notifyDataSetChanged()
-            field = value
-        }
+    val clickEventSubject: PublishSubject<ClickEvent<T>> = PublishSubject.create<ClickEvent<T>>()
 
     constructor() : this(AdapterDelegatesManager<T>())
 
@@ -28,7 +23,7 @@ abstract class  BaseDelegationAdapter<T>(protected val delegatesManager: Adapter
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        delegatesManager.onBindViewHolder(items, position, holder, null)
+        delegatesManager.onBindViewHolder(getItems(), position, holder, null)
     }
 
     override fun onBindViewHolder(
@@ -36,12 +31,17 @@ abstract class  BaseDelegationAdapter<T>(protected val delegatesManager: Adapter
         position: Int,
         payloads: List<Any>
     ) {
-        delegatesManager.onBindViewHolder(items, position, holder, payloads)
-        //declareAdapterEvent(holder, position, payloads)
+        delegatesManager.onBindViewHolder(getItems(), position, holder, payloads)
+        holder.itemView.setOnClickListener {
+            clickEventSubject.onNext(ClickEvent(getItems(), holder.adapterPosition))
+            if (holder is BaseViewHolder) {
+                holder.onViewClicked()
+            }
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return delegatesManager.getItemViewType(items, position)
+        return delegatesManager.getItemViewType(getItems(), position)
     }
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
@@ -54,16 +54,19 @@ abstract class  BaseDelegationAdapter<T>(protected val delegatesManager: Adapter
 
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
         delegatesManager.onViewAttachedToWindow(holder)
+        if (holder is BaseViewHolder) {
+            holder.onViewAttachedToWindow()
+        }
     }
 
     override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
         delegatesManager.onViewDetachedFromWindow(holder)
+        if (holder is BaseViewHolder) {
+            holder.onViewDetachedFromWindow()
+        }
     }
-//
-//    open fun declareAdapterEvent(
-//        holder: RecyclerView.ViewHolder, position: Int,
-//        payloads: List<Any>
-//    ) {
-//
-//    }
+
+    abstract fun getItems(): T
+
+    abstract fun setItems(items: T)
 }

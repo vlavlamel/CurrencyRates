@@ -16,23 +16,43 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         val adapter = CurrencyRatesAdapter()
         binding.recyclerView.adapter = adapter
-        binding.recyclerView.addItemDecoration(object: RecyclerView.ItemDecoration() {
+        binding.recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(
                 outRect: Rect,
                 view: View,
                 parent: RecyclerView,
                 state: RecyclerView.State
             ) {
-                outRect.bottom =dpToPx(20)
-                outRect.top =dpToPx(20)
-                outRect.left =dpToPx(20)
-                outRect.right =dpToPx(20)
+                outRect.bottom = dpToPx(20)
+                outRect.top = dpToPx(20)
+                outRect.left = dpToPx(20)
+                outRect.right = dpToPx(20)
             }
         })
-        adapter.items = Currency.values().toList()
+        adapter.setItems(Currency.values().toList())
+        addDisposable(adapter.clickEventSubject.subscribe {
+            val newList = adapter.getItems().toMutableList()
+            newList.makeFirst(it.items!![it.position])
+            adapter.setItems(newList) {
+                binding.recyclerView.scrollToTop()
+            }
+        })
         binding.toolbar.title = "Rates"
     }
 
     override fun inflateViewBinding(): ActivityMainBinding =
         ActivityMainBinding.inflate(layoutInflater)
+
+    fun <E> MutableList<E>.makeFirst(element: E) {
+        remove(element)
+        addFirst(element)
+    }
+
+    fun <E> MutableList<E>.addFirst(element: E) {
+        add(0, element)
+    }
+
+    fun RecyclerView.scrollToTop() {
+        (this.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, 1)
+    }
 }

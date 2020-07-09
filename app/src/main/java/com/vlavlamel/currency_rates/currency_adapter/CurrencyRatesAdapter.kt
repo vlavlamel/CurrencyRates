@@ -1,9 +1,9 @@
 package com.vlavlamel.currency_rates.currency_adapter
 
-import com.vlavlamel.currency_rates.Currency
 import com.vlavlamel.currency_rates.base_adapter.ListDelegationAdapter
+import com.vlavlamel.currency_rates.model.RateItem
 
-class CurrencyRatesAdapter : ListDelegationAdapter<Currency>(RatesDiffUtilCallback()) {
+class CurrencyRatesAdapter : ListDelegationAdapter<RateItem>(RatesDiffUtilCallback()) {
     init {
         delegatesManager.addDelegate(CurrencyRateDelegate())
     }

@@ -5,22 +5,22 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.doOnTextChanged
-import com.vlavlamel.currency_rates.Currency
 import com.vlavlamel.currency_rates.base_adapter.AdapterEvent
 import com.vlavlamel.currency_rates.base_adapter.BaseViewHolder
 import com.vlavlamel.currency_rates.databinding.ItemCurrencyRateBinding
+import com.vlavlamel.currency_rates.model.RateItem
 import java.math.BigDecimal
-import kotlin.random.Random
 
 class CurrencyRateViewHolder(private val binding: ItemCurrencyRateBinding) :
     BaseViewHolder(binding) {
 
     @SuppressLint("ClickableViewAccessibility")
-    fun bind(item: Currency) {
-        binding.countryIcon.setImageDrawable(binding.countryIcon.context.getDrawable(item.image))
-        binding.currencyCode.text = item.code
-        binding.currencyFullName.text = binding.currencyFullName.context.getString(item.fullName)
-        binding.rate.setText(Random.nextInt(0, 1000).toString())
+    fun bind(item: RateItem) {
+        binding.countryIcon.setImageDrawable(binding.countryIcon.context.getDrawable(item.currency.image))
+        binding.currencyCode.text = item.currency.code
+        binding.currencyFullName.text =
+            binding.currencyFullName.context.getString(item.currency.fullName)
+        binding.rate.setText(item.rate.toString())
         binding.rate.setOnTouchListener { v, _ ->
             if (adapterPosition == 0) {
                 return@setOnTouchListener v.performClick()

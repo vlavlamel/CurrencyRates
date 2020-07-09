@@ -6,6 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vlavlamel.currency_rates.Utils.dpToPx
+import com.vlavlamel.currency_rates.base_adapter.AdapterEvent
 import com.vlavlamel.currency_rates.currency_adapter.CurrencyRatesAdapter
 import com.vlavlamel.currency_rates.databinding.ActivityMainBinding
 
@@ -30,11 +31,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             }
         })
         adapter.setItems(Currency.values().toList())
-        addDisposable(adapter.clickEventSubject.subscribe {
-            val newList = adapter.getItems().toMutableList()
-            newList.makeFirst(it.items!![it.position])
-            adapter.setItems(newList) {
-                binding.recyclerView.scrollToTop()
+        addDisposable(adapter.adapterEventSubject.subscribe {
+            when (it) {
+                is AdapterEvent.ClickEvent -> {
+                    val newList = adapter.getItems().toMutableList()
+                    newList.makeFirst(adapter.getItems()[it.position])
+                    adapter.setItems(newList) {
+                        binding.recyclerView.scrollToTop()
+                    }
+                }
+                is AdapterEvent.RateInputEvent -> {
+                    println("TEST ${it.rate}")
+                }
             }
         })
         binding.toolbar.title = "Rates"

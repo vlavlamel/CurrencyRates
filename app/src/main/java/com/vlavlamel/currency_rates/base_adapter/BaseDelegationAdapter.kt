@@ -12,14 +12,19 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 abstract class BaseDelegationAdapter<T>(protected val delegatesManager: AdapterDelegatesManager<T>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    val clickEventSubject: PublishSubject<ClickEvent<T>> = PublishSubject.create<ClickEvent<T>>()
+    val adapterEventSubject: PublishSubject<AdapterEvent> =
+        PublishSubject.create<AdapterEvent>()
 
     constructor() : this(AdapterDelegatesManager<T>())
 
     constructor(vararg delegates: AdapterDelegate<T>) : this(AdapterDelegatesManager<T>(*delegates))
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return delegatesManager.onCreateViewHolder(parent, viewType)
+        return delegatesManager.onCreateViewHolder(parent, viewType).apply {
+            if (this is BaseViewHolder) {
+                attachAdapterEvent(this@BaseDelegationAdapter.adapterEventSubject)
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -32,12 +37,6 @@ abstract class BaseDelegationAdapter<T>(protected val delegatesManager: AdapterD
         payloads: List<Any>
     ) {
         delegatesManager.onBindViewHolder(getItems(), position, holder, payloads)
-        holder.itemView.setOnClickListener {
-            clickEventSubject.onNext(ClickEvent(getItems(), holder.adapterPosition))
-            if (holder is BaseViewHolder) {
-                holder.onViewClicked()
-            }
-        }
     }
 
     override fun getItemViewType(position: Int): Int {

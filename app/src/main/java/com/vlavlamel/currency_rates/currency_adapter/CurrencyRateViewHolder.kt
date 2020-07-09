@@ -4,12 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.core.widget.doOnTextChanged
 import com.vlavlamel.currency_rates.Currency
+import com.vlavlamel.currency_rates.base_adapter.AdapterEvent
 import com.vlavlamel.currency_rates.base_adapter.BaseViewHolder
 import com.vlavlamel.currency_rates.databinding.ItemCurrencyRateBinding
+import java.math.BigDecimal
 import kotlin.random.Random
 
-class CurrencyRateViewHolder(val binding: ItemCurrencyRateBinding) : BaseViewHolder(binding) {
+class CurrencyRateViewHolder(private val binding: ItemCurrencyRateBinding) :
+    BaseViewHolder(binding) {
 
     @SuppressLint("ClickableViewAccessibility")
     fun bind(item: Currency) {
@@ -24,6 +28,14 @@ class CurrencyRateViewHolder(val binding: ItemCurrencyRateBinding) : BaseViewHol
                 itemView.performClick()
                 return@setOnTouchListener false
             }
+        }
+        binding.rate.doOnTextChanged { text, start, before, count ->
+            adapterEventSubject.onNext(
+                AdapterEvent.RateInputEvent(
+                    adapterPosition,
+                    BigDecimal(text.toString())
+                )
+            )
         }
     }
 
@@ -52,5 +64,4 @@ class CurrencyRateViewHolder(val binding: ItemCurrencyRateBinding) : BaseViewHol
                 ?: return
         inputMethodManager.hideSoftInputFromWindow(windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
-
 }

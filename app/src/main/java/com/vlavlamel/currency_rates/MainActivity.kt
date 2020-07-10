@@ -14,6 +14,8 @@ import com.vlavlamel.currency_rates.base_adapter.AdapterEvent
 import com.vlavlamel.currency_rates.currency_adapter.CurrencyRatesAdapter
 import com.vlavlamel.currency_rates.databinding.ActivityMainBinding
 import com.vlavlamel.currency_rates.repo.RatesRepository
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import java.math.RoundingMode
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
@@ -41,10 +43,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             when (it) {
                 is AdapterEvent.ClickEvent -> {
                     clearDisposable()
+                    mainViewModel.multiplier =
+                        adapter.getItems()[it.position].rate.setScale(2, RoundingMode.CEILING)
                     mainViewModel.currentCurrency = adapter.getItems()[it.position].currency
                     val newList = adapter.getItems().toMutableList()
                     newList.makeFirst(adapter.getItems()[it.position])
                     adapter.setItems(newList) {
+                        mainViewModel.orderOfRates = adapter.getItems().map {
+                            it.currency
+                        }.toMutableList().apply {
+                            removeAt(0)
+                        }
                         getService()
                         binding.recyclerView.scrollToTop()
                     }
@@ -61,8 +70,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     fun getService() {
-        addDisposable(mainViewModel.getRates().subscribe {
-            adapter.setItems(it.let {
+        addDisposable(mainViewModel.getRates().map {
+            it.let {
                 val orderedList = it.toMutableList()
                 if (adapter.getItems().isNotEmpty()) {
                     it.forEach {
@@ -72,8 +81,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                     }
                 }
                 orderedList
-            })
-        })
+            }
+        }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { adapter.setItems(it) })
     }
 
     override fun inflateViewBinding(): ActivityMainBinding =

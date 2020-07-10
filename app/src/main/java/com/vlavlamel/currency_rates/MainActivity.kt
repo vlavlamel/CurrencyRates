@@ -18,6 +18,7 @@ import com.vlavlamel.currency_rates.repo.RatesRepository
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     val adapter = CurrencyRatesAdapter()
+    val mainViewModel = MainViewModel(RatesRepository(RatesApiService(NetworkModule())))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,28 +37,42 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 outRect.right = dpToPx(20)
             }
         })
-        addDisposable(adapter.adapterEventSubject.subscribe {
+        adapter.adapterEventSubject.subscribe {
             when (it) {
                 is AdapterEvent.ClickEvent -> {
+                    clearDisposable()
+                    mainViewModel.currentCurrency = adapter.getItems()[it.position].currency
                     val newList = adapter.getItems().toMutableList()
                     newList.makeFirst(adapter.getItems()[it.position])
                     adapter.setItems(newList) {
+                        getService()
                         binding.recyclerView.scrollToTop()
                     }
                 }
                 is AdapterEvent.RateInputEvent -> {
-                    println("TEST ${it.rate}")
+                    mainViewModel.multiplier = it.rate
+                    clearDisposable()
+                    getService()
                 }
             }
-        })
+        }
         binding.toolbar.title = "Rates"
         getService()
     }
 
     fun getService() {
-        val mainViewModel = MainViewModel(RatesRepository(RatesApiService(NetworkModule())))
         addDisposable(mainViewModel.getRates().subscribe {
-            adapter.setItems(it)
+            adapter.setItems(it.let {
+                val orderedList = it.toMutableList()
+                if (adapter.getItems().isNotEmpty()) {
+                    it.forEach {
+                        orderedList[adapter.getItems().indexOfFirst { orderItem ->
+                            orderItem.currency == it.currency
+                        }] = it
+                    }
+                }
+                orderedList
+            })
         })
     }
 

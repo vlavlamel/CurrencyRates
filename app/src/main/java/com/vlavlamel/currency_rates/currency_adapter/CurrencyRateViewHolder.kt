@@ -20,7 +20,7 @@ class CurrencyRateViewHolder(private val binding: ItemCurrencyRateBinding) :
         binding.currencyCode.text = item.currency.code
         binding.currencyFullName.text =
             binding.currencyFullName.context.getString(item.currency.fullName)
-        binding.rate.setText(item.rate.toString())
+        if (binding.rate.text.toString() != item.rate.toString()) binding.rate.setText(item.rate.toString())
         binding.rate.setOnTouchListener { v, _ ->
             if (adapterPosition == 0) {
                 return@setOnTouchListener v.performClick()
@@ -30,12 +30,14 @@ class CurrencyRateViewHolder(private val binding: ItemCurrencyRateBinding) :
             }
         }
         binding.rate.doOnTextChanged { text, start, before, count ->
-            adapterEventSubject.onNext(
-                AdapterEvent.RateInputEvent(
-                    adapterPosition,
-                    BigDecimal(text.toString())
+            if (adapterPosition == 0) {
+                adapterEventSubject.onNext(
+                    AdapterEvent.RateInputEvent(
+                        adapterPosition,
+                        BigDecimal(text.toString())
+                    )
                 )
-            )
+            }
         }
     }
 

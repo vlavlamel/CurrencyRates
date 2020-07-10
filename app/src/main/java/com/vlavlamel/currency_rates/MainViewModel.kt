@@ -7,14 +7,23 @@ import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 
 class MainViewModel(private val ratesRepository: RatesRepository) {
-    fun getRates(): Observable<List<RateItem>> = Observable.interval(1, TimeUnit.SECONDS)
+    var multiplier = BigDecimal.ONE
+    var currentCurrency = Currency.EUR
+
+    fun getRates(): Observable<List<RateItem>> = Observable.interval(0, 1, TimeUnit.SECONDS)
         .flatMap {
-            ratesRepository.getRates().map { response ->
+            ratesRepository.getRates(currentCurrency.code).map { response ->
                 response.rates.map {
-                    RateItem(Currency.valueOf(it.key), it.value)
+                    RateItem(
+                        Currency.valueOf(it.key),
+                        it.value.multiply(multiplier)
+                    )
                 }.let {
                     it.toMutableList().apply {
-                        add(0, RateItem(Currency.EUR, BigDecimal.ONE))
+                        add(
+                            0,
+                            RateItem(currentCurrency, multiplier)
+                        )
                     }
                 }
             }

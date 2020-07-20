@@ -5,7 +5,7 @@ import androidx.viewbinding.ViewBinding
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 abstract class BaseViewHolder(_binding: ViewBinding) : RecyclerView.ViewHolder(_binding.root) {
-    lateinit var adapterEventSubject: PublishSubject<AdapterEvent>
+    protected var adapterEventSubject: PublishSubject<AdapterEvent>? = null
     open fun attachAdapterEvent(adapterEventSubject: PublishSubject<AdapterEvent>) {
         this.adapterEventSubject = adapterEventSubject
         itemView.setOnClickListener {

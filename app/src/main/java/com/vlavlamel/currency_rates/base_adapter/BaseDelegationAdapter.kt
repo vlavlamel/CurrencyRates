@@ -22,7 +22,7 @@ abstract class BaseDelegationAdapter<T>(protected val delegatesManager: AdapterD
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return delegatesManager.onCreateViewHolder(parent, viewType).apply {
             if (this is BaseViewHolder) {
-                attachAdapterEvent(this@BaseDelegationAdapter.adapterEventSubject)
+                attachAdapterEvent(adapterEventSubject)
             }
         }
     }
@@ -53,16 +53,10 @@ abstract class BaseDelegationAdapter<T>(protected val delegatesManager: AdapterD
 
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
         delegatesManager.onViewAttachedToWindow(holder)
-        if (holder is BaseViewHolder) {
-            holder.onViewAttachedToWindow()
-        }
     }
 
     override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
         delegatesManager.onViewDetachedFromWindow(holder)
-        if (holder is BaseViewHolder) {
-            holder.onViewDetachedFromWindow()
-        }
     }
 
     abstract fun getItems(): T

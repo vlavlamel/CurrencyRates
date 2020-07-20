@@ -3,24 +3,24 @@ package com.vlavlamel.currency_rates
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.vlavlamel.currency_rates.Utils.currencyFormat
 import com.vlavlamel.currency_rates.Utils.dpToPx
 import com.vlavlamel.currency_rates.Utils.makeFirst
 import com.vlavlamel.currency_rates.Utils.scrollToTop
-import com.vlavlamel.currency_rates.api.NetworkModule
-import com.vlavlamel.currency_rates.api.RatesApiService
 import com.vlavlamel.currency_rates.base_adapter.AdapterEvent
 import com.vlavlamel.currency_rates.currency_adapter.CurrencyRatesAdapter
 import com.vlavlamel.currency_rates.databinding.ActivityMainBinding
-import com.vlavlamel.currency_rates.repo.RatesRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import java.math.RoundingMode
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
-    val adapter = CurrencyRatesAdapter()
-    val mainViewModel = MainViewModel(RatesRepository(RatesApiService(NetworkModule())))
+    private val adapter = CurrencyRatesAdapter()
+    private val mainViewModel: MainViewModel by viewModels {
+        MainViewModelFactory()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +44,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 is AdapterEvent.ClickEvent -> {
                     clearDisposable()
                     mainViewModel.multiplier =
-                        adapter.getItems()[it.position].rate.setScale(2, RoundingMode.CEILING)
+                        adapter.getItems()[it.position].rate.currencyFormat()
                     mainViewModel.currentCurrency = adapter.getItems()[it.position].currency
                     val newList = adapter.getItems().toMutableList()
                     newList.makeFirst(adapter.getItems()[it.position])

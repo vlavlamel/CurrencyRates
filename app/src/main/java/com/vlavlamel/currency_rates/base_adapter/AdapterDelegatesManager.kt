@@ -64,10 +64,7 @@ class AdapterDelegatesManager<T>() {
     fun removeDelegate(viewType: Int): AdapterDelegatesManager<T> =
         apply { delegates.remove(viewType) }
 
-    fun getItemViewType(items: T?, position: Int): Int {
-        if (items == null) {
-            throw NullPointerException("Items datasource is null!")
-        }
+    fun getItemViewType(items: T, position: Int): Int {
         delegates.forEach { key, delegate ->
             if (delegate.isForViewType(items, position)) return key
         }
@@ -91,7 +88,7 @@ class AdapterDelegatesManager<T>() {
             .onCreateViewHolder(parent)
 
     fun onBindViewHolder(
-        items: T?, position: Int,
+        items: T, position: Int,
         holder: RecyclerView.ViewHolder, payloads: List<Any>?
     ) {
         val delegate = getDelegateForViewType(holder.itemViewType)

@@ -9,7 +9,7 @@ abstract class AdapterDelegate<T> {
     abstract fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder
 
     abstract fun onBindViewHolder(
-        items: T?,
+        items: T,
         position: Int,
         holder: RecyclerView.ViewHolder,
         payloads: List<Any>
@@ -19,7 +19,15 @@ abstract class AdapterDelegate<T> {
 
     open fun onFailedToRecycleView(holder: RecyclerView.ViewHolder): Boolean = false
 
-    open fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {}
+    open fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        if (holder is BaseViewHolder) {
+            holder.onViewAttachedToWindow()
+        }
+    }
 
-    open fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {}
+    open fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        if (holder is BaseViewHolder) {
+            holder.onViewDetachedFromWindow()
+        }
+    }
 }

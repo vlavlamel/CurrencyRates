@@ -20,11 +20,11 @@ class CurrencyRateDelegate : ListAdapterDelegate<RateItem>() {
         )
 
     override fun onBindViewHolder(
-        items: List<RateItem>?,
+        items: List<RateItem>,
         position: Int,
         holder: RecyclerView.ViewHolder,
         payloads: List<Any>
     ) {
-        (holder as CurrencyRateViewHolder).bind(items!![position])
+        (holder as CurrencyRateViewHolder).bind(items[position])
     }
 }

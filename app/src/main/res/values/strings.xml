@@ -34,4 +34,5 @@
     <string name="try_currency">Turkish Lira</string>
     <string name="usd_currency">US Dollar</string>
     <string name="zar_currency">South African Rand</string>
+    <string name="default_currency"> </string>
 </resources>

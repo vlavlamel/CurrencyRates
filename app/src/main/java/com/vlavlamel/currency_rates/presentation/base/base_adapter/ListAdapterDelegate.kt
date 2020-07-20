@@ -1,4 +1,4 @@
-package com.vlavlamel.currency_rates.base_adapter
+package com.vlavlamel.currency_rates.presentation.base.base_adapter
 
 abstract class ListAdapterDelegate<T> : AdapterDelegate<List<T>>() {
     override fun isForViewType(items: List<T>, position: Int): Boolean =

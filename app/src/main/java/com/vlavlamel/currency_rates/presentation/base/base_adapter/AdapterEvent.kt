@@ -1,4 +1,4 @@
-package com.vlavlamel.currency_rates.base_adapter
+package com.vlavlamel.currency_rates.presentation.base.base_adapter
 
 import java.math.BigDecimal
 

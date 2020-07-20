@@ -24,6 +24,7 @@
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@+id/currency_full_name"
         app:layout_constraintEnd_toStartOf="@+id/rate_wrapper"
         app:layout_constraintHorizontal_bias="0"

@@ -1,7 +1,7 @@
-package com.vlavlamel.currency_rates.currency_adapter
+package com.vlavlamel.currency_rates.presentation.rates.currency_adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.vlavlamel.currency_rates.model.RateItem
+import com.vlavlamel.currency_rates.presentation.rates.currency_adapter.item.RateItem
 
 class RatesItemCallback : DiffUtil.ItemCallback<RateItem>() {
     override fun areItemsTheSame(oldItem: RateItem, newItem: RateItem): Boolean =

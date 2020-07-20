@@ -1,22 +1,17 @@
-package com.vlavlamel.currency_rates.currency_adapter
+package com.vlavlamel.currency_rates.presentation.rates.currency_adapter
 
 import android.annotation.SuppressLint
-import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
-import com.vlavlamel.currency_rates.AmountFormatter
 import com.vlavlamel.currency_rates.Utils.currencyFormat
 import com.vlavlamel.currency_rates.Utils.hideKeyboard
 import com.vlavlamel.currency_rates.Utils.showKeyboard
-import com.vlavlamel.currency_rates.base_adapter.AdapterEvent
-import com.vlavlamel.currency_rates.base_adapter.BaseViewHolder
 import com.vlavlamel.currency_rates.databinding.ItemCurrencyRateBinding
-import com.vlavlamel.currency_rates.model.RateItem
+import com.vlavlamel.currency_rates.presentation.base.base_adapter.AdapterEvent
+import com.vlavlamel.currency_rates.presentation.base.base_adapter.BaseViewHolder
+import com.vlavlamel.currency_rates.presentation.rates.currency_adapter.item.RateItem
 
 class CurrencyRateViewHolder(private val binding: ItemCurrencyRateBinding) :
     BaseViewHolder(binding) {
-
-    val amountFormatter =
-        AmountFormatter(ContextCompat.getColor(itemView.context, android.R.color.black))
 
     @SuppressLint("ClickableViewAccessibility")
     fun bind(item: RateItem) {

@@ -1,4 +1,4 @@
-package com.vlavlamel.currency_rates
+package com.vlavlamel.currency_rates.presentation.base
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

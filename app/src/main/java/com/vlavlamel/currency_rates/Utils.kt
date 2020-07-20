@@ -43,9 +43,12 @@ object Utils {
     }
 
     fun BigDecimal.currencyFormat(): String =
-        NumberFormat.getCurrencyInstance().format(this).dropLast(2)
+        kotlin.runCatching { NumberFormat.getCurrencyInstance().format(this).dropLast(2) }
+            .getOrElse { "0" }
 
-    fun String.currencyFormat(): BigDecimal = DecimalFormat().apply {
-        isParseBigDecimal = true
-    }.parse(this) as BigDecimal
+    fun String.currencyFormat(): BigDecimal = kotlin.runCatching {
+        DecimalFormat().apply {
+            isParseBigDecimal = true
+        }.parse(this) as BigDecimal
+    }.getOrElse { BigDecimal.ZERO }
 }
